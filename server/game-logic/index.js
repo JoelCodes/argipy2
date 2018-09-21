@@ -13,7 +13,7 @@ function randomId(n = 6){
 }
 
 function randomPos(){
-  return {x: randomInt(width), y: randomInt(height)};
+  return {x: Math.random() * width, y: Math.random() * height};
 }
 const initialState = {
   gridsize: {width, height},
@@ -41,6 +41,20 @@ function removePlayer(id){
 
 function gameLogicReducer(state = initialState, {type, payload}){
   switch(type){
+    case 'MOVE_POINT': {
+      const {id, point} = payload;
+      const player = state.players[id];
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          [id]: {
+            ...player,
+            pos: point
+          }
+        }
+      };
+    }
     case 'ADD_PLAYER': {
       return {
         ...state,
@@ -62,9 +76,16 @@ function gameLogicReducer(state = initialState, {type, payload}){
   }
 }
 
+function stateForPlayer(state, id){
+  return {
+    ...state,
+    me: id
+  }
+}
 module.exports = {
   gameLogicReducer,
   addPlayer,
   removePlayer,
-  randomInt
+  randomInt,
+  stateForPlayer,
 };
